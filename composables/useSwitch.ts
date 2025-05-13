@@ -1,8 +1,8 @@
-import { ref } from "vue";
+import { type Ref } from "vue";
 import { browser } from "wxt/browser";
 
-const useSwitch = () => {
-  const switchValue = ref(false);
+const useSwitch = (value: Ref<boolean>) => {
+  const switchValue = value;
   const toggleSwitch = async () => {
     const tabs = await browser.tabs.query({
       active: true,
@@ -22,7 +22,7 @@ const useSwitch = () => {
       if (currentTab.id) {
         await browser.scripting.executeScript({
           target: { tabId: currentTab.id },
-          func: (isCheckedValue: boolean) => {
+          func: async (isCheckedValue: boolean) => {
             // This function runs in the context of the page
             const secondaryId = document.getElementById("secondary");
 

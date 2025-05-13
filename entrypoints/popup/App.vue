@@ -1,8 +1,21 @@
 <script lang="ts" setup>
 import useSwitch from "@/composables/useSwitch";
+import { browser } from "wxt/browser";
 import Switch from "@/components/Switch.vue";
+import { onMounted, ref, watch } from "vue";
 
-const { switchValue, toggleSwitch } = useSwitch();
+const switchLocale = ref(false);
+
+onMounted(async () => {
+  const data = await browser.storage.local.get("show");
+  switchLocale.value = data.show === "yes" ? true : false;
+});
+
+const { switchValue, toggleSwitch } = useSwitch(switchLocale);
+
+watch(switchValue, async (newValue) => {
+  await browser.storage.local.set({ show: newValue ? "yes" : "no" });
+});
 </script>
 
 <template>
