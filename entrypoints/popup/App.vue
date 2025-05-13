@@ -1,22 +1,52 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { ref } from "vue";
+import { browser } from "wxt/browser";
+import Switch from "@/components/Switch.vue";
+
+const isChecked = ref(false);
+
+const handleClick = async () => {
+  const tabs = await browser.tabs.query({
+    active: true,
+    currentWindow: true,
+  });
+
+  if (tabs.length > 0) {
+    const currentTab = tabs[0];
+
+    if (!currentTab.url?.includes("youtube.com/watch")) {
+      console.error("Not a YouTube watch page.");
+      isChecked.value = false;
+      return;
+    }
+
+    if (currentTab.id) {
+      await browser.scripting.executeScript({
+        target: { tabId: currentTab.id },
+        func: (isCheckedValue: boolean) => {
+          // This function runs in the context of the page
+          const secondaryId = document.getElementById("secondary");
+
+          if (!secondaryId) {
+            console.error("Element with ID 'secondary' not found.");
+            return;
+          }
+
+          if (isCheckedValue) {
+            secondaryId.style.display = "none";
+          } else {
+            secondaryId.style.display = "block";
+          }
+        },
+        args: [isChecked.value],
+      });
+    }
+  }
+};
+</script>
 
 <template>
   <div>
-    <h1>hei yuh</h1>
+    <Switch v-model="isChecked" @click="handleClick" />
   </div>
 </template>
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #54bc4ae0);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>

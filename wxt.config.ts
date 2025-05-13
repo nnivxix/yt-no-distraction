@@ -7,5 +7,7 @@ export default defineConfig({
     name: "YT No Distraction",
     description: "A YouTube extension that removes distractions.",
     version: "1.0.0",
+    host_permissions: ["<all_urls>"],
+    permissions: ["activeTab", "tabs", "scripting"],
   },
 });
