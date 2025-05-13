@@ -12,11 +12,12 @@ const useSwitch = () => {
     if (tabs.length > 0) {
       const currentTab = tabs[0];
 
-      if (!currentTab.url?.includes("youtube.com/watch")) {
-        console.error("Not a YouTube watch page.");
-        switchValue.value = false;
-        return;
-      }
+      // Uncomment this if you want to restrict the extension to only work on YouTube watch pages
+      // if (!currentTab.url?.includes("youtube.com/watch")) {
+      //   console.error("Not a YouTube watch page.");
+      //   switchValue.value = false;
+      //   return;
+      // }
 
       if (currentTab.id) {
         await browser.scripting.executeScript({
@@ -33,7 +34,7 @@ const useSwitch = () => {
             if (isCheckedValue) {
               secondaryId.style.display = "none";
             } else {
-              secondaryId.style.display = "block";
+              secondaryId.style.removeProperty("display");
             }
           },
           args: [switchValue.value],
