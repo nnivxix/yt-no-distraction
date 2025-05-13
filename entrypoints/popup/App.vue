@@ -47,6 +47,28 @@ const handleClick = async () => {
 
 <template>
   <div>
-    <Switch v-model="isChecked" @click="handleClick" />
+    <h1>Toggle YouTube Sidebar</h1>
+    <div class="switch-container">
+      <Switch v-model="isChecked" @click="handleClick" id="switch" />
+      <label for="switch">Hide Sidebar</label>
+    </div>
   </div>
 </template>
+
+<style scoped>
+h1 {
+  font-size: 20px;
+}
+
+.switch-container {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  gap: 10px;
+
+  label {
+    font-size: 16px;
+    font-weight: 700;
+  }
+}
+</style>

@@ -1,11 +1,15 @@
 <script lang="ts" setup>
-import { defineModel } from "vue";
+import { defineModel, defineOptions } from "vue";
 
 const modelValue = defineModel<boolean>("modelValue");
+
+defineOptions({
+  inheritAttrs: false,
+});
 </script>
 <template>
   <label class="switch">
-    <input type="checkbox" v-model="modelValue" @click.stop />
+    <input type="checkbox" v-model="modelValue" @click.stop v-bind="$attrs" />
     <span class="slider round"></span>
   </label>
 </template>
