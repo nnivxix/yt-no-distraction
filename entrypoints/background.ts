@@ -9,23 +9,50 @@ export default defineBackground(() => {
     } else {
       isShow = showValue === "yes";
     }
-    console.log("Initial show value:", isShow);
-
     executeTab(isShow); // ✅ jalankan setelah nilai isShow didapat
   });
 
   browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    console.log("Tab updated:", tabId);
-    console.log("Change info:", changeInfo);
     // Only run when the page is fully loaded and URL contains youtube
     if (changeInfo.status === "complete") {
       // Get latest setting from storage before applying
       browser.storage.local.get("show").then((result) => {
         isShow = result.show === "yes";
         executeTab(isShow);
+        setTimeout(() => {
+          executeScript(tabId, isShow);
+        }, 1500);
       });
     }
   });
+
+  const executeScript = (tabId: number, isCheckedValue: boolean) => {
+    browser.scripting
+      .executeScript({
+        target: { tabId: tabId },
+        func: (isChecked) => {
+          // Use a more robust way to wait for the element
+          const findElement = () => {
+            const secondaryId = document.getElementById("secondary");
+            if (!secondaryId) {
+              console.log("Element not found, will retry...");
+              setTimeout(findElement, 500);
+              return;
+            }
+
+            if (isChecked) {
+              secondaryId.style.display = "none";
+            } else {
+              secondaryId.style.removeProperty("display");
+            }
+          };
+
+          findElement();
+        },
+        args: [isCheckedValue],
+      })
+      .catch((err) => console.error("Failed to execute script:", err));
+  };
 
   const executeTab = (isCheckedValue: boolean) =>
     browser.tabs
