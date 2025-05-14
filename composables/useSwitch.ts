@@ -13,11 +13,11 @@ const useSwitch = (value: Ref<boolean>) => {
       const currentTab = tabs[0];
 
       // Uncomment this if you want to restrict the extension to only work on YouTube watch pages
-      // if (!currentTab.url?.includes("youtube.com/watch")) {
-      //   console.error("Not a YouTube watch page.");
-      //   switchValue.value = false;
-      //   return;
-      // }
+      if (!currentTab.url?.includes("youtube.com/watch")) {
+        console.error("Not a YouTube watch page.");
+        switchValue.value = false;
+        return;
+      }
 
       if (currentTab.id) {
         await browser.scripting.executeScript({
